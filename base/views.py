@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django.shortcuts import render
 
 # Views may be functions or classes
@@ -7,8 +6,8 @@ from django.shortcuts import render
 
 
 def home(request):
-  return HttpResponse("hello world")
+  return render(request, "home.html")
 
 
 def room(request):
-  return HttpResponse("ROOM")
+  return render(request, "room.html")
