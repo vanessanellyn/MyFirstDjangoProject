@@ -24,6 +24,9 @@ class Room(models.Model):
     # auto_now_add = Only takes a timestamp when we first create something
     created = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-created']
+
     def __str__(self):
         return self.name
 

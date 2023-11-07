@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from base.models import Room
+from base.forms import RoomForm
 
 # Views may be functions or classes
 # Views will also relay our request to any database or templates
@@ -8,9 +9,41 @@ from base.models import Room
 
 def home(request):
     rooms = Room.objects.all()
-    return render(request, "base/home.html", {'rooms': rooms})
+    context = {'rooms': rooms}
+    return render(request, "base/home.html", context)
 
 
 def room(request, pk):
     room = Room.objects.get(id=pk)
-    return render(request, "base/room.html", {'room': room})
+    context = {'room': room}
+    return render(request, "base/room.html", context)
+
+
+def createRoom(request):
+    form = RoomForm()
+
+    if request.method == 'POST':
+        # print(request.POST) || request.POST.get('name')
+        form = RoomForm(request.POST)
+        if form.is_valid():  # All values match
+            form.save()
+            return redirect('home')
+
+    context = {'form': form}
+    return render(request, 'base/room_form.html', context)
+
+
+def updateRoom(request, pk):
+    room = Room.objects.get(id=pk)
+    form = RoomForm(instance=room)  # instance= prefills the blanks
+
+    context = {'form': form}
+    return render(request, 'base/room_form.html', context)
+
+
+def deleteRoom(request, pk):
+    room = Room.objects.get(id=pk)
+    if request.method == 'POST':
+        room.delete()
+        return redirect('home')
+    return render(request, 'base/delete.html', {'obj': room})
